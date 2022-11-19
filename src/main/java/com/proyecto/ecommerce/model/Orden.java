@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
@@ -30,7 +29,7 @@ public class Orden {
 	private Usuario usuario;
 	
 	@OneToMany(mappedBy = "orden")
-	private List<DetalleOrden>detalle;
+	private List<DetalleOrden> detalle;
 	
 	
 	public Orden() {
@@ -109,12 +108,12 @@ public class Orden {
 
 	
 
-	public DetalleOrden getDetalle() {
+	public List<DetalleOrden> getDetalle() {
 		return detalle;
 	}
 
 
-	public void setDetalle(DetalleOrden detalle) {
+	public void setDetalle(List<DetalleOrden> detalle) {
 		this.detalle = detalle;
 	}
 
