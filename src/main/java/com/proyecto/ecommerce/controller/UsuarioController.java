@@ -1,5 +1,9 @@
 package com.proyecto.ecommerce.controller;
 
+import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +19,18 @@ import com.proyecto.ecommerce.service.IUsuarioService;
 @RequestMapping("/usuario")
 public class UsuarioController {
 
-	private final Logger logger= LoggerFactory.getLogger(UsuarioController.class);
-	
+	private final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
+
 	@Autowired
 	private IUsuarioService usuarioService;
-	
-	//usuario/registro
+
+	// usuario/registro
 	@GetMapping("/registro")
 	public String create() {
 		return "usuario/registro";
-		
+
 	}
-	
-	
+
 	@PostMapping("/save")
 	public String save(Usuario usuario) {
 		logger.info("Usuario registro: {}", usuario);
@@ -35,4 +38,31 @@ public class UsuarioController {
 		usuarioService.save(usuario);
 		return "redirect:/";
 	}
+
+	@GetMapping("/login")
+	private String login() {
+		return "usuario/login";
+	}
+
+	@PostMapping("/acceder")
+	public String acceder(Usuario usuario, HttpSession session) {
+		logger.info("Accesos : {}", usuario);
+
+		Optional<Usuario> user = usuarioService.findByEmail(usuario.getEmail());
+		//logger.info("Usuario obtenido de BBDD {}", user.get());
+
+		if (user.isPresent()) {
+			session.setAttribute("idusuario", user.get().getId());
+			if (user.get().getTipo().equals("admin")) {
+				return "redirect:/administrador";
+			} else {
+				return "redirect:/";
+			}
+		} else {
+			logger.info("El usuario no existe");
+		}
+
+		return "redirect:/";
+	}
+
 }
